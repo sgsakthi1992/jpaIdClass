@@ -1,5 +1,6 @@
 package com.jpa.id.jpaIdClass.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,38 +9,34 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@IdClass(AccountId.class)
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Account {
+public class Bank {
     @Id
-    private String accountNumber;
-    @Id
-    private String accountType;
+    private Long id;
     private String name;
-    @OneToOne
-    @JoinColumn(name = "bank_id")
-    private Bank bank;
+    @OneToMany(mappedBy = "bank")
+    @ToString.Exclude
+    private List<Account> accounts;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Account account = (Account) o;
-        return accountNumber != null && Objects.equals(accountNumber, account.accountNumber)
-                && accountType != null && Objects.equals(accountType, account.accountType);
+        Bank bank = (Bank) o;
+        return id != null && Objects.equals(id, bank.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber, accountType);
+        return getClass().hashCode();
     }
 }
